@@ -1,0 +1,4 @@
+id,situation,intent,variant_number,kirundi,translation_en,translation_fr,difficulty,register,source_type,review_status,notes
+mkt_va_001,market,mkt_elder_morning,1,,,,,respectful,original,draft,
+mkt_va_001,market,mkt_elder_morning,2,,,,,respectful,original,draft,
+mkt_va_001,market,mkt_elder_morning,3,,,,,respectful,original,draft,

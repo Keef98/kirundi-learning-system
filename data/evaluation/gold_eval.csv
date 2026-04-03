@@ -1,0 +1,2 @@
+id,task_type,situation,difficulty,prompt_language,prompt,reference_answer,accepted_variants,reject_if,review_status,notes
+eval_001,translate_to_kirundi,greetings,beginner,en,,,,,draft,

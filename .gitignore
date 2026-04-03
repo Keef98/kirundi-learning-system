@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Exports are generated, but we track them for convenience
+# Uncomment the next line if you prefer not to track them:
+# data/exports/*.jsonl

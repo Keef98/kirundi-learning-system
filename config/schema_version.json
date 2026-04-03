@@ -1,0 +1,10 @@
+{
+  "current_version": "1.0",
+  "changelog": [
+    {
+      "version": "1.0",
+      "date": "2026-04-03",
+      "description": "Initial schema. Five CSV types: translations, explanations, corrections, dialogues, variants. Minimal metadata: situation, difficulty, register, review_status, source_type, notes."
+    }
+  ]
+}
