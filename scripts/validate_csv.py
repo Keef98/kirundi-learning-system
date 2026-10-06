@@ -2,7 +2,6 @@
 """Validate all pedagogical CSV files against the expected schema."""
 
 import csv
-import os
 import sys
 from pathlib import Path
 
@@ -21,7 +20,7 @@ EXPECTED_COLUMNS = {
     "variants": ["id", "situation", "intent", "variant_number", "kirundi", "translation_en", "translation_fr", "difficulty", "register", "source_type", "review_status", "notes"],
 }
 
-def validate_file(filepath: Path, file_type: str) -> list[str]:
+def validate_file(filepath: Path, file_type: str, situation_folder: str) -> list[str]:
     errors = []
     expected = EXPECTED_COLUMNS.get(file_type)
     if not expected:
@@ -40,13 +39,41 @@ def validate_file(filepath: Path, file_type: str) -> list[str]:
         if extra:
             errors.append(f"  Unexpected columns: {extra}")
 
-        ids_seen = set()
+        keys_seen = set()
         for i, row in enumerate(reader, start=2):
-            row_id = row.get("id") or row.get("dialogue_id") or ""
+            row_id = (row.get("id") or row.get("dialogue_id") or "").strip()
 
             # Check for duplicate IDs (skip empty placeholder rows)
-            if row_id and row_id not in ids_seen:
-                ids_seen.add(row_id)
+            if row_id:
+                if file_type == "dialogues":
+                    turn = (row.get("turn_number") or "").strip()
+                    key = (row_id, turn)
+                    if key in keys_seen:
+                        errors.append(
+                            f"  Row {i}: duplicate dialogue_id '{row_id}' with turn_number '{turn}'"
+                        )
+                    else:
+                        keys_seen.add(key)
+                elif file_type == "variants":
+                    variant = (row.get("variant_number") or "").strip()
+                    key = (row_id, variant)
+                    if key in keys_seen:
+                        errors.append(
+                            f"  Row {i}: duplicate id '{row_id}' with variant_number '{variant}'"
+                        )
+                    else:
+                        keys_seen.add(key)
+                else:
+                    if row_id in keys_seen:
+                        errors.append(f"  Row {i}: duplicate id '{row_id}'")
+                    else:
+                        keys_seen.add(row_id)
+
+            situation = (row.get("situation") or "").strip()
+            if situation != situation_folder:
+                errors.append(
+                    f"  Row {i}: situation '{situation}' does not match folder '{situation_folder}'"
+                )
 
             # Validate label values
             difficulty = row.get("difficulty", "")
@@ -85,7 +112,7 @@ def main():
         print(f"\n📁 {situation_dir.name}/")
         for csv_file in sorted(situation_dir.glob("*.csv")):
             file_type = csv_file.stem
-            errors = validate_file(csv_file, file_type)
+            errors = validate_file(csv_file, file_type, situation_dir.name)
             if errors:
                 print(f"  ❌ {csv_file.name}")
                 for e in errors:

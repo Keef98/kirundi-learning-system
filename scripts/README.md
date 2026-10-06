@@ -15,6 +15,8 @@ Usage:
 python scripts/validate_csv.py
 ```
 
+Tests (from repo root): `python -m unittest discover -s tests -v`
+
 ### `export_training_data.py`
 Converts approved CSV records into instruction/input/output JSONL files for model training. See `docs/TRAINING_EXPORT_FORMAT.md` for conversion rules.
 
